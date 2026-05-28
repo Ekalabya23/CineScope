@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#050609] text-zinc-100 antialiased overflow-x-hidden selection:bg-red-600 selection:text-white;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    margin: 0;
+    scrollbar-color: #e50914 #0b0c10;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom Cinematic Design System Utilities */
+.glass-panel {
+  background: rgba(15, 16, 20, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ambient-glow {
+  background: radial-gradient(
+    circle at 50% -20%,
+    rgba(229, 9, 20, 0.15) 0%,
+    transparent 60%
+  );
+}
+
+.glass-card {
+  background: rgba(15, 17, 23, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.premium-gradient-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-200 to-zinc-500;
+}
+
+.cinematic-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.11;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mix-blend-mode: overlay;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer 1.8s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Custom Scrollbar Optimization for Interactive Tracks */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
