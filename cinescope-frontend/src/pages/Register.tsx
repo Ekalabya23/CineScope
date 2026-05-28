@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useStore } from "../store/useStore";
+import { apiClient } from "../api/client";
 
 export const Register: React.FC = () => {
   const [name, setName] = useState("");
@@ -14,10 +15,11 @@ export const Register: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/v1/auth/register",
-        { name, email, password },
-      );
+      const res = await apiClient.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
       setAuth(res.data.data.user, res.data.token);
       navigate("/browse");
     } catch (err: any) {

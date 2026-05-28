@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useStore } from "../store/useStore";
+import { apiClient } from "../api/client";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/v1/auth/login", {
+      const res = await apiClient.post("/auth/login", {
         email,
         password,
       });

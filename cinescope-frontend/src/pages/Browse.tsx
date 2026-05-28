@@ -29,7 +29,10 @@ const CinematicSkeleton = () => (
           <div className="h-7 w-80 rounded-full bg-white/10" />
           <div className="flex gap-4 overflow-hidden">
             {[1, 2, 3, 4, 5].map((card) => (
-              <div key={card} className="h-64 w-44 flex-none rounded-xl bg-white/10 shimmer" />
+              <div
+                key={card}
+                className="h-64 w-44 flex-none rounded-xl bg-white/10 shimmer"
+              />
             ))}
           </div>
         </div>
@@ -60,16 +63,20 @@ export const Browse: React.FC = () => {
         setHomepage(homeData);
         setCinematicMood(
           homeData?.sections?.[0]?.mood || "mind-bending",
-          homeData?.heroBanner?.backdropPath || homeData?.heroBanner?.backdrop_path,
+          homeData?.heroBanner?.backdropPath ||
+            homeData?.heroBanner?.backdrop_path,
         );
         setLoading(false);
 
-        const [personalData, historyData, profileData, moodData] = await Promise.all([
-          platformApi.personalized().catch(() => null),
-          platformApi.continueWatching().catch(() => []),
-          platformApi.tasteProfile().catch(() => null),
-          mood ? platformApi.moodDiscovery(mood).catch(() => null) : Promise.resolve(null),
-        ]);
+        const [personalData, historyData, profileData, moodData] =
+          await Promise.all([
+            platformApi.personalized().catch(() => null),
+            platformApi.continueWatching().catch(() => []),
+            platformApi.tasteProfile().catch(() => null),
+            mood
+              ? platformApi.moodDiscovery(mood).catch(() => null)
+              : Promise.resolve(null),
+          ]);
 
         if (!mounted) return;
         setPersonalized(personalData);
@@ -102,7 +109,11 @@ export const Browse: React.FC = () => {
     const seen = new Set(base.map((section: any) => section.title));
     const uniquePersonal = personal.filter((section: any) => {
       if (seen.has(section.title)) return false;
-      if (/trending|popular right now|top rated|new releases|most watched/i.test(section.title)) {
+      if (
+        /trending|popular right now|top rated|new releases|most watched/i.test(
+          section.title,
+        )
+      ) {
         return false;
       }
       seen.add(section.title);
@@ -113,7 +124,9 @@ export const Browse: React.FC = () => {
 
   if (loading) return <CinematicSkeleton />;
 
-  const heroItems = sections.flatMap((section: any) => section.items || []).slice(0, 8);
+  const heroItems = sections
+    .flatMap((section: any) => section.items || [])
+    .slice(0, 8);
   const activeTheme = getMoodTheme(moodDiscovery?.mood || sections[0]?.mood);
 
   return (
@@ -140,14 +153,18 @@ export const Browse: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="relative z-10 max-w-4xl space-y-5"
           >
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: activeTheme.accent }}>
+            <p
+              className="text-[10px] font-black uppercase tracking-[0.3em]"
+              style={{ color: activeTheme.accent }}
+            >
               Mood discovery system
             </p>
             <h1 className="text-5xl font-black capitalize leading-none text-white md:text-8xl">
               {moodDiscovery.mood.replace("-", " ")}
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-300">
-              {moodDiscovery.emotionalTone} across {moodDiscovery.themes?.join(", ")}.
+              {moodDiscovery.emotionalTone} across{" "}
+              {moodDiscovery.themes?.join(", ")}.
             </p>
             <div className="flex flex-wrap gap-2">
               {moodShortcuts.map((item) => (
@@ -164,7 +181,9 @@ export const Browse: React.FC = () => {
         </section>
       )}
 
-      <div className={`relative z-10 ${moodDiscovery ? "pt-0" : "pt-12"} mx-auto max-w-[1700px] space-y-20 px-4 md:px-10 lg:px-16`}>
+      <div
+        className={`relative z-10 ${moodDiscovery ? "pt-0" : "pt-12"} mx-auto max-w-[1700px] space-y-20 px-4 md:px-10 lg:px-16`}
+      >
         {moodDiscovery && (
           <section className="space-y-5">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
@@ -187,7 +206,10 @@ export const Browse: React.FC = () => {
 
         {!moodDiscovery &&
           sections.map((section: any) => (
-            <DynamicSectionRenderer key={`${section.title}-${section.mood}`} section={section} />
+            <DynamicSectionRenderer
+              key={`${section.title}-${section.mood}`}
+              section={section}
+            />
           ))}
 
         {!moodDiscovery && <TasteProfilePanel profile={tasteProfile} />}
