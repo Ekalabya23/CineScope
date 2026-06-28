@@ -114,6 +114,10 @@ export const TmdbService = {
     });
   },
 
+  getWatchProviders: async (id: string | number, mediaType: "movie" | "tv") => {
+    return getTmdb(`/${mediaType}/${id}/watch/providers`);
+  },
+
   searchMulti: async (query: string) => {
     const data = await getTmdb<TmdbResultsResponse<any>>("/search/multi", {
       params: { query },

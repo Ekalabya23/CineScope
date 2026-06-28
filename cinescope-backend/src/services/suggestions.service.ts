@@ -52,6 +52,11 @@ const isExactMatch = (normalizedQuery: string, candidateTitle?: string) => {
   return a === b;
 };
 
+const startsWithQuery = (query: string, candidateTitle?: string) => {
+  if (!candidateTitle) return false;
+  return candidateTitle.toLowerCase().trim().startsWith(query.toLowerCase().trim());
+};
+
 const scoreCandidate = (opts: {
   q: string;
   normalizedQuery: string;
@@ -73,7 +78,9 @@ const scoreCandidate = (opts: {
   let score = 0;
 
   // 1) exact
-  if (isExactMatch(normalizedQuery, title)) score += 1.4;
+  if (isExactMatch(q, title)) score += 4.5;
+  else if (isExactMatch(normalizedQuery, title)) score += 2.2;
+  else if (startsWithQuery(q, title)) score += 1.1;
 
   // 2) canonical/universe keyword boost
   if (canonicalUniverse) {
@@ -84,8 +91,13 @@ const scoreCandidate = (opts: {
 
   // 3) semantic-ish: fuzzy substring from user input
   const qNorm = normalizedQuery.toLowerCase();
+  const originalNorm = q.toLowerCase().trim();
   const t = String(title).toLowerCase();
   if (t.includes(qNorm) || qNorm.includes(t)) score += 0.35;
+  if (t.includes(originalNorm) || originalNorm.includes(t)) score += 0.45;
+  if (originalNorm.length <= 4 && !isExactMatch(originalNorm, title) && t !== originalNorm) {
+    score -= Math.min(0.35, Math.max(0, t.length - originalNorm.length) * 0.015);
+  }
 
   // 4) popularity / rating
   score += Math.min(1.0, popularity / 100) * 0.55;
@@ -122,12 +134,24 @@ export const SuggestionsService = {
         normalized.normalizedTitle ||
         normalizedQuery;
 
+      const literalResults = await TmdbService.searchMulti(normalizedQuery);
+      const normalizedResults =
+        tmdbQuery.toLowerCase() === normalizedQuery.toLowerCase()
+          ? []
+          : await TmdbService.searchMulti(tmdbQuery);
+
+      const merged = new Map<string, any>();
+      [...literalResults, ...normalizedResults].forEach((item: any) => {
+        if (!item || (item.media_type !== "movie" && item.media_type !== "tv")) return;
+        merged.set(`${item.media_type}-${item.id}`, item);
+      });
+
       // TMDB multi-search
-      const raw = (await TmdbService.searchMulti(tmdbQuery))
+      const raw = Array.from(merged.values())
         .filter(
           (x: any) => x && (x.media_type === "movie" || x.media_type === "tv"),
         )
-        .slice(0, 12);
+        .slice(0, 24);
 
       const canonicalUniverse = normalized.canonicalMatch?.entry.universe;
       const correctionReason = normalized.correctionReason;
@@ -162,7 +186,12 @@ export const SuggestionsService = {
 
         const poster = posterUrl(candidate.poster_path, "w300");
 
-        const franchise = canonicalUniverse || "CineScope Universe";
+        const titleMatchesCanonical =
+          canonicalUniverse &&
+          (candidate.title || candidate.name || "")
+            .toLowerCase()
+            .includes(canonicalUniverse.toLowerCase().split(" ")[0]);
+        const franchise = titleMatchesCanonical ? canonicalUniverse : "CineScope Universe";
 
         return {
           id: String(candidate.id || ""),

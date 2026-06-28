@@ -1,5 +1,6 @@
 import { AiInteraction } from "../models/aiInteraction.model";
 import { RecommendationAnalytics } from "../models/recommendationAnalytics.model";
+import { ReelInteraction } from "../models/reelInteraction.model";
 import { UserHistory } from "../models/userHistory.model";
 import { Watchlist } from "../models/watchlist.model";
 
@@ -17,11 +18,16 @@ const topValues = (values: string[], limit = 5) => {
 
 export const UserBehaviorAnalyzer = {
   getBehaviorSnapshot: async (userId: string) => {
-    const [history, watchlist, interactions, aiInteractions] = await Promise.all([
+    const [history, watchlist, interactions, aiInteractions, reelInteractions] = await Promise.all([
       UserHistory.find({ userId }).sort({ lastViewedAt: -1 }).limit(80).lean(),
       Watchlist.find({ userId }).sort({ createdAt: -1 }).limit(80).lean(),
       RecommendationAnalytics.find({ userId }).sort({ createdAt: -1 }).limit(120).lean(),
       AiInteraction.find({ userId }).sort({ createdAt: -1 }).limit(20).lean(),
+      ReelInteraction.find({ userId })
+        .populate("reelId", "moodTags mediaType tmdbId title")
+        .sort({ createdAt: -1 })
+        .limit(120)
+        .lean(),
     ]);
 
     return {
@@ -29,6 +35,7 @@ export const UserBehaviorAnalyzer = {
       watchlist,
       interactions,
       aiInteractions,
+      reelInteractions,
       repeatedSearches: topValues(
         interactions
           .filter((item) => item.interactionType === "search")

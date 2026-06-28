@@ -9,6 +9,9 @@ export const TasteProfileService = {
       ...snapshot.history.flatMap((item: any) => item.moods || []),
       ...snapshot.interactions.map((item: any) => item.mood).filter(Boolean),
       ...snapshot.aiInteractions.map((item: any) => item.mood).filter(Boolean),
+      ...snapshot.reelInteractions
+        .filter((item: any) => ["watched_full", "tapped_through", "saved"].includes(item.action))
+        .flatMap((item: any) => item.reelId?.moodTags || []),
     ];
     const themeSignals = [
       ...snapshot.history.flatMap((item: any) => item.themes || []),
@@ -20,7 +23,8 @@ export const TasteProfileService = {
       snapshot.history.length > 0 ||
       snapshot.watchlist.length > 0 ||
       snapshot.interactions.length > 0 ||
-      snapshot.aiInteractions.length > 0;
+      snapshot.aiInteractions.length > 0 ||
+      snapshot.reelInteractions.length > 0;
 
     const dominantMoods =
       UserBehaviorAnalyzer.topValues(moodSignals, 4).length > 0

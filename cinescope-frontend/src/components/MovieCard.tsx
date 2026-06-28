@@ -45,6 +45,30 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     : details?.genres?.map((genre: any) => genre.name) || [];
   const releaseYear = getReleaseYear(movie);
 
+  const trackRecommendationInteraction = (
+    interactionType:
+      | "accepted"
+      | "hover"
+      | "trailer_click"
+      | "detail_click",
+  ) => {
+    apiClient
+      .post("/history/interaction", {
+        mediaId: movie.id,
+        mediaType,
+        title,
+        interactionType,
+        mood: mood || recommendation.moodAlignment,
+        score: recommendation.matchPercentage,
+        metadata: {
+          genreIds: movie.genreIds || movie.genre_ids,
+          genres,
+          recommendation,
+        },
+      })
+      .catch(() => undefined);
+  };
+
   useEffect(() => {
     if (isHovered && !details) {
       apiClient
@@ -53,6 +77,15 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         .catch(() => {});
     }
   }, [isHovered, movie.id, mediaType, details]);
+
+  useEffect(() => {
+    if (!isHovered) return;
+    const timer = window.setTimeout(() => {
+      trackRecommendationInteraction("hover");
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, [isHovered]);
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,6 +98,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           title,
           posterPath: getPosterPath(movie),
           mediaType,
+          metadata: {
+            mood: mood || recommendation.moodAlignment,
+            genres,
+            genreIds: movie.genreIds || movie.genre_ids,
+          },
         });
       }
       setIsSaved(!isSaved);
@@ -73,7 +111,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     }
   };
 
-  const openDetails = () => navigate(`/media/${mediaType}/${movie.id}`);
+  const openDetails = () => {
+    trackRecommendationInteraction("detail_click");
+    navigate(`/media/${mediaType}/${movie.id}`);
+  };
   const isWide = size === "wide" || size === "feature";
   const cardSize = fluid
     ? "w-full min-w-0"
@@ -187,7 +228,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                   href={`https://www.youtube.com/watch?v=${details.videos.results[0].key}`}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackRecommendationInteraction("trailer_click");
+                  }}
                   className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/10 text-[10px] font-bold text-white"
                 >
                   ▶

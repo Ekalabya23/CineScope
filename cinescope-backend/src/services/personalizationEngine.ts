@@ -2,6 +2,7 @@ import { defaultCollectionConfigs } from "../config/recommendation.config";
 import { RecommendationSession } from "../models/recommendationSession.model";
 import { CollectionBuilder } from "./collectionBuilder";
 import { TasteProfileService } from "./tasteProfileService";
+import { UnifiedRecommendationEngine } from "./unifiedRecommendationEngine";
 
 export const PersonalizationEngine = {
   generatePersonalizedRecommendations: async (userId: string) => {
@@ -40,14 +41,29 @@ export const PersonalizationEngine = {
       },
     ];
 
-    const sections = (
-      await Promise.allSettled(
-        personalizedConfigs.map((config) => CollectionBuilder.buildSection(config as any, profile, 12)),
-      )
-    )
+    const [unifiedResult, fallbackResults] = await Promise.all([
+      UnifiedRecommendationEngine.generateHomeSections(userId, profile, 12),
+      Promise.allSettled(
+        personalizedConfigs.map((config) =>
+          CollectionBuilder.buildSection(config as any, profile, 12),
+        ),
+      ),
+    ]);
+
+    const fallbackSections = fallbackResults
       .filter((result): result is PromiseFulfilledResult<any> => result.status === "fulfilled")
       .map((result) => result.value)
       .filter((section) => section.items.length > 0);
+    const adaptiveSections = unifiedResult.sections;
+    const seenTitles = new Set(adaptiveSections.map((section) => section.title));
+    const sections = [
+      ...adaptiveSections,
+      ...fallbackSections.filter((section) => {
+        if (seenTitles.has(section.title)) return false;
+        seenTitles.add(section.title);
+        return true;
+      }),
+    ];
 
     await RecommendationSession.create({
       userId,
@@ -57,6 +73,6 @@ export const PersonalizationEngine = {
       contextSnapshot: profile,
     });
 
-    return { tasteProfile: profile, sections };
+    return { tasteProfile: profile, sections, orchestration: unifiedResult.orchestration };
   },
 };

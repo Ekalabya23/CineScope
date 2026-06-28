@@ -32,7 +32,12 @@ export const register = catchAsync(
       status: "success",
       token,
       data: {
-        user: { id: newUser._id, name: newUser.name, email: newUser.email },
+        user: {
+          id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
       },
     });
   },
@@ -58,10 +63,17 @@ export const login = catchAsync(
 
     const token = signToken(user._id.toString());
 
-    res.status(200).json({
+  res.status(200).json({
       status: "success",
       token,
-      data: { user: { id: user._id, name: user.name, email: user.email } },
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      },
     });
   },
 );

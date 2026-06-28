@@ -18,6 +18,7 @@ const recommendationAnalyticsSchema = new Schema(
         "hover",
         "watchlist_add",
         "search",
+        "detail_click",
       ],
       required: true,
     },

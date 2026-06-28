@@ -6,6 +6,7 @@ import { MediaDetails } from "./pages/MediaDetails";
 import { Roadmap } from "./pages/Roadmap";
 import { Profile } from "./pages/Profile";
 import { Explore } from "./pages/Explore";
+import { Reels } from "./pages/Reels";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { useStore } from "./store/useStore";
@@ -55,6 +56,14 @@ export const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Explore />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reels"
+              element={
+                <ProtectedRoute>
+                  <Reels />
                 </ProtectedRoute>
               }
             />

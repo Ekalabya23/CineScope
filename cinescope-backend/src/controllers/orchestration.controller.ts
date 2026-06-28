@@ -8,6 +8,7 @@ import { RecommendationEngine } from "../services/recommendationEngine";
 import { UserHistory } from "../models/userHistory.model";
 import { RecommendationAnalytics } from "../models/recommendationAnalytics.model";
 import { UserProfileService } from "../services/userProfileService";
+import { UnifiedRecommendationEngine } from "../services/unifiedRecommendationEngine";
 import { catchAsync } from "../utils/catchAsync";
 
 export const getHomepage = catchAsync(
@@ -124,6 +125,17 @@ export const upsertProgress = catchAsync(
       { new: true, upsert: true, setDefaultsOnInsert: true },
     );
 
+    if (Number(progressPercentage) >= 95) {
+      UnifiedRecommendationEngine.recordEvent({
+        userId: String(req.user._id),
+        mediaId,
+        mediaType,
+        signalType: "completed",
+        sourceSurface: "history",
+        metadata: { moods, mood: moods?.[0], genres, themes },
+      }).catch(() => undefined);
+    }
+
     res.status(200).json({ status: "success", data });
   },
 );
@@ -134,6 +146,20 @@ export const trackInteraction = catchAsync(
       userId: req.user._id,
       ...req.body,
     });
+
+    UnifiedRecommendationEngine.recordEvent({
+      userId: String(req.user._id),
+      mediaId: req.body.mediaId,
+      mediaType: req.body.mediaType || "movie",
+      signalType: req.body.interactionType,
+      value: req.body.value ?? 1,
+      sessionId: req.body.sessionId,
+      sourceSurface: req.body.sourceSurface || "recommendations",
+      metadata: {
+        ...(req.body.metadata || {}),
+        mood: req.body.mood,
+      },
+    }).catch(() => undefined);
 
     res.status(201).json({ status: "success", data });
   },

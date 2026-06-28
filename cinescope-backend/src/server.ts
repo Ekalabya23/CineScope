@@ -19,6 +19,7 @@ import historyRoutes from "./routes/history.routes";
 import roadmapRoutes from "./routes/roadmap.routes";
 import searchRoutes from "./routes/search.routes";
 import exploreRoutes from "./routes/explore.routes";
+import reelsRoutes from "./routes/reels.routes";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/api/v1/history", historyRoutes);
 app.use("/api/v1/roadmap", roadmapRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/explore", exploreRoutes);
+app.use("/api/v1/reels", reelsRoutes);
 
 // Catch-all unhandled API routes path
 app.all("*", (req, res, next) => {

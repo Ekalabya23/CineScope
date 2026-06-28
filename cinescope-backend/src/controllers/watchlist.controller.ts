@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { Watchlist } from "../models/watchlist.model";
+import { UnifiedRecommendationEngine } from "../services/unifiedRecommendationEngine";
 import { catchAsync } from "../utils/catchAsync";
 
 export const getWatchlist = catchAsync(
@@ -25,6 +26,15 @@ export const addToWatchlist = catchAsync(
       posterPath,
       mediaType,
     });
+
+    UnifiedRecommendationEngine.recordEvent({
+      userId: String(req.user._id),
+      mediaId,
+      mediaType: mediaType || "movie",
+      signalType: "watchlist_add",
+      sourceSurface: "watchlist",
+      metadata: req.body.metadata || {},
+    }).catch(() => undefined);
 
     res.status(201).json({ status: "success", data: item });
   },

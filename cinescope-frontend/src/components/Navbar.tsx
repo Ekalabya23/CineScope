@@ -68,6 +68,14 @@ export const Navbar: React.FC = () => {
               Explore
             </NavLink>
             <NavLink
+              to="/reels"
+              className={({ isActive }) =>
+                `rounded-full px-4 py-2 transition ${isActive ? "bg-white/10 text-white" : "hover:bg-white/5 hover:text-white"}`
+              }
+            >
+              Reels
+            </NavLink>
+            <NavLink
               to="/roadmap"
               className={({ isActive }) =>
                 `rounded-full px-4 py-2 transition ${isActive ? "bg-white/10 text-white" : "hover:bg-white/5 hover:text-white"}`
@@ -173,7 +181,7 @@ export const Navbar: React.FC = () => {
             animate={{ boxShadow: `0 0 28px ${theme.glow}` }}
             className="flex items-center gap-1 rounded-2xl border border-white/10 bg-black/55 p-1.5 backdrop-blur-2xl"
           >
-            {["browse", "explore", "roadmap", "profile"].map((item) => (
+            {["browse", "explore", "reels", "roadmap", "profile"].map((item) => (
               <button
                 key={item}
                 onClick={() =>
@@ -182,6 +190,8 @@ export const Navbar: React.FC = () => {
                       ? "/browse"
                       : item === "explore"
                         ? "/explore"
+                      : item === "reels"
+                        ? "/reels"
                       : item === "roadmap"
                         ? "/roadmap"
                         : "/profile",
@@ -189,7 +199,7 @@ export const Navbar: React.FC = () => {
                 }
                 className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-zinc-200"
               >
-                {item === "browse" ? "Home" : item === "explore" ? "Explore" : item === "roadmap" ? "Map" : "Me"}
+                {item === "browse" ? "Home" : item === "explore" ? "Explore" : item === "reels" ? "Reels" : item === "roadmap" ? "Map" : "Me"}
               </button>
             ))}
             <button
