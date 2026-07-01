@@ -102,9 +102,9 @@ export const ReelCard: React.FC<ReelCardProps> = ({
 
       <div className="pointer-events-none absolute inset-0 z-[18] bg-[radial-gradient(circle_at_50%_28%,transparent_0,rgba(0,0,0,.05)_34%,rgba(0,0,0,.42)_100%)]" />
       <div
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-20 transition-all duration-300 sm:px-8 md:pb-9 ${
-          captionExpanded ? "pt-40" : "pt-20"
-        }`}
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 transition-all duration-500 ease-out sm:px-8 md:pb-9 ${
+          !paused ? "pb-8" : "pb-24"
+        } ${captionExpanded ? "pt-40" : "pt-20"}`}
         style={{
           background: captionExpanded
             ? "linear-gradient(180deg, transparent 0%, rgba(0,0,0,.18) 16%, rgba(0,0,0,.68) 46%, rgba(0,0,0,.98) 100%)"
@@ -156,7 +156,9 @@ export const ReelCard: React.FC<ReelCardProps> = ({
         </motion.div>
       </div>
 
-      <div className="absolute bottom-28 right-4 z-30 grid gap-3 md:bottom-10 md:right-5">
+      <div className={`absolute right-4 z-30 grid gap-3 transition-all duration-500 ease-out md:bottom-10 md:right-5 ${
+        !paused ? "bottom-8" : "bottom-28"
+      }`}>
         <button
           type="button"
           onClick={onLike}
