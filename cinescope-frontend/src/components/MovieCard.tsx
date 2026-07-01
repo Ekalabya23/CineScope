@@ -215,21 +215,21 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               {recommendation.recommendationReason ||
                 "Curated from live title metadata and collection context."}
             </p>
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-1.5 pt-1">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   openDetails();
                 }}
-                className="min-h-[44px] flex-1 rounded-lg bg-white text-[11px] font-black uppercase tracking-wide text-black"
+                className="min-h-[44px] flex-1 rounded-lg bg-white text-[10px] sm:text-[11px] font-black uppercase tracking-wide text-black"
               >
                 Details
               </button>
               <button
                 onClick={handleWatchlistToggle}
-                className="min-h-[44px] rounded-lg border border-white/10 bg-white/10 px-4 text-[11px] font-bold text-white"
+                className="min-h-[44px] w-10 sm:w-12 rounded-lg border border-white/10 bg-white/10 grid place-items-center text-sm font-bold text-white transition hover:bg-white/20"
               >
-                {isSaved ? "Saved" : "+"}
+                {isSaved ? "✓" : "+"}
               </button>
               {details?.videos?.results?.[0]?.key && (
                 <a
@@ -240,7 +240,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                     e.stopPropagation();
                     trackRecommendationInteraction("trailer_click");
                   }}
-                  className="grid min-h-[44px] min-w-[44px] place-items-center rounded-lg border border-white/10 bg-white/10 text-[11px] font-bold text-white"
+                  className="grid min-h-[44px] w-10 sm:w-12 place-items-center rounded-lg border border-white/10 bg-white/10 text-xs font-bold text-white transition hover:bg-white/20"
                 >
                   ▶
                 </a>
