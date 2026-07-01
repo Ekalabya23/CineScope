@@ -478,7 +478,7 @@ export const Roadmap: React.FC = () => {
               )}
 
               <div className="relative rounded-[2rem] border border-white/10 bg-[#07080c]/86 p-4 backdrop-blur-2xl md:p-8">
-                <div className="pointer-events-none absolute bottom-10 left-10 top-10 w-px bg-gradient-to-b from-red-300 via-sky-300 to-purple-300 md:left-1/2" />
+                <div className="pointer-events-none absolute bottom-10 left-6 top-10 w-px bg-gradient-to-b from-red-300 via-sky-300 to-purple-300 md:left-1/2" />
                 {visibleNodes.length === 0 && (
                   <div className="relative grid min-h-[260px] place-items-center text-center">
                     <div>
@@ -510,12 +510,12 @@ export const Roadmap: React.FC = () => {
                         onMouseEnter={() => setActiveNode(node.id)}
                         onMouseLeave={() => setActiveNode(null)}
                         onClick={() => setActiveNode(activeNode === node.id ? null : node.id)}
-                        className={`relative grid gap-4 md:w-[48%] ${
+                        className={`relative grid gap-4 pl-6 md:pl-0 md:w-[48%] ${
                           leftSide ? "md:mr-auto" : "md:ml-auto"
                         }`}
                       >
                         <div
-                          className={`absolute top-10 hidden h-px w-[8%] bg-white/20 md:block ${leftSide ? "-right-[8%]" : "-left-[8%]"}`}
+                          className={`absolute top-10 left-2 h-px w-4 bg-white/20 md:w-[8%] md:left-auto ${leftSide ? "md:-right-[8%]" : "md:-left-[8%]"}`}
                         />
                         <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-4 shadow-2xl transition backdrop-blur-xl">
                           <div
@@ -527,8 +527,8 @@ export const Roadmap: React.FC = () => {
                                   : "radial-gradient(circle at 18% 0%, rgba(56,189,248,.2), transparent 40%)",
                             }}
                           />
-                          <div className="relative flex gap-4">
-                            <div className="w-24 flex-none overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+                          <div className="relative flex gap-3 sm:gap-4">
+                            <div className="w-20 sm:w-24 flex-none overflow-hidden rounded-2xl border border-white/10 bg-black/40">
                               {node.posterPath ? (
                                 <img
                                   src={imageUrl(node.posterPath, "w300")}
@@ -546,7 +546,7 @@ export const Roadmap: React.FC = () => {
                                     Step {index + 1} ·{" "}
                                     {node.releaseYear || "TBA"}
                                   </p>
-                                  <h3 className="mt-1 text-xl font-black text-white">
+                                  <h3 className="mt-1 text-lg sm:text-xl font-black text-white">
                                     {node.title}
                                   </h3>
                                 </div>
@@ -562,31 +562,31 @@ export const Roadmap: React.FC = () => {
                                     : "Optional"}
                                 </span>
                               </div>
-                              <p className="mt-3 text-sm leading-6 text-zinc-300">
+                              <p className="mt-3 text-xs sm:text-sm leading-5 sm:leading-6 text-zinc-300">
                                 {node.aiExplanation}
                               </p>
-                              <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                                <div className="rounded-xl bg-black/25 p-3">
-                                  <p className="text-[9px] uppercase tracking-[0.18em] text-zinc-500">
+                              <div className="mt-4 grid grid-cols-3 gap-2">
+                                <div className="rounded-lg sm:rounded-xl bg-black/25 p-2 sm:p-3">
+                                  <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-zinc-500">
                                     Importance
                                   </p>
-                                  <p className="mt-1 text-lg font-black text-emerald-200">
+                                  <p className="mt-1 text-sm sm:text-lg font-black text-emerald-200">
                                     {node.importanceScore}%
                                   </p>
                                 </div>
-                                <div className="rounded-xl bg-black/25 p-3">
-                                  <p className="text-[9px] uppercase tracking-[0.18em] text-zinc-500">
+                                <div className="rounded-lg sm:rounded-xl bg-black/25 p-2 sm:p-3">
+                                  <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-zinc-500">
                                     Emotion
                                   </p>
-                                  <p className="mt-1 truncate text-xs font-bold capitalize text-white">
+                                  <p className="mt-1 truncate text-[10px] sm:text-xs font-bold capitalize text-white">
                                     {node.emotionalRelevance}
                                   </p>
                                 </div>
-                                <div className="rounded-xl bg-black/25 p-3">
-                                  <p className="text-[9px] uppercase tracking-[0.18em] text-zinc-500">
+                                <div className="rounded-lg sm:rounded-xl bg-black/25 p-2 sm:p-3">
+                                  <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-zinc-500">
                                     Continuity
                                   </p>
-                                  <p className="mt-1 truncate text-xs font-bold capitalize text-white">
+                                  <p className="mt-1 truncate text-[10px] sm:text-xs font-bold capitalize text-white">
                                     {node.continuitySignificance}
                                   </p>
                                 </div>
