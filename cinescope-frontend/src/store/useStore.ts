@@ -5,6 +5,8 @@ interface AuthState {
   user: any | null;
   setAuth: (user: any, token: string) => void;
   logout: () => void;
+  isReelPlaying: boolean;
+  setReelPlaying: (playing: boolean) => void;
 }
 
 export const useStore = create<AuthState>((set) => ({
@@ -20,4 +22,6 @@ export const useStore = create<AuthState>((set) => ({
     localStorage.removeItem("user");
     set({ user: null, token: null });
   },
+  isReelPlaying: false,
+  setReelPlaying: (playing) => set({ isReelPlaying: playing }),
 }));

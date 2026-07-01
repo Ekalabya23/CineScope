@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const Navbar: React.FC = () => {
-  const { user, logout } = useStore();
+  const { user, logout, isReelPlaying } = useStore();
   const { mood, theme } = useCinematicTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,7 +43,9 @@ export const Navbar: React.FC = () => {
             : "rgba(255,255,255,.08)",
         }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="fixed left-0 right-0 top-0 sm:top-4 mx-auto z-50 flex h-14 sm:h-16 w-full sm:w-[98%] xl:w-[92%] max-w-[1400px] items-center justify-between sm:rounded-full border-b sm:border border-white/10 sm:border-white/15 px-4 backdrop-blur-2xl backdrop-saturate-150 lg:px-8"
+        className={`fixed left-0 right-0 top-0 sm:top-4 mx-auto z-50 flex h-14 sm:h-16 w-full sm:w-[98%] xl:w-[92%] max-w-[1400px] items-center justify-between sm:rounded-full border-b sm:border border-white/10 sm:border-white/15 px-4 backdrop-blur-2xl backdrop-saturate-150 lg:px-8 transition-transform duration-500 ease-out ${
+          isReelPlaying ? "max-md:-translate-y-[150%]" : "max-md:translate-y-0"
+        }`}
       >
         <div className="flex items-center">
           <Link
@@ -170,7 +172,11 @@ export const Navbar: React.FC = () => {
       </motion.nav>
 
       {user && (
-        <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center md:hidden">
+        <div
+          className={`fixed inset-x-0 bottom-0 z-50 flex justify-center md:hidden transition-transform duration-500 ease-out ${
+            isReelPlaying ? "translate-y-[150%]" : "translate-y-0"
+          }`}
+        >
           <motion.div className="flex w-full items-center justify-around bg-black/40 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] px-2 backdrop-blur-3xl backdrop-saturate-150 border-t border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_-10px_40px_rgba(0,0,0,0.5)]">
             {["browse", "explore", "reels", "roadmap"].map((item) => {
               const Icon =

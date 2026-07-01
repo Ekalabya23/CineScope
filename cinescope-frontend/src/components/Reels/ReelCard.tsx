@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Heart, Info, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { ReelClip } from "../../hooks/useReelFeed";
 import { getMoodTheme } from "../../theme/cinematicTheme";
+import { useStore } from "../../store/useStore";
 
 type ReelCardProps = {
   clip: ReelClip;
@@ -31,6 +32,7 @@ export const ReelCard: React.FC<ReelCardProps> = ({
   const compactCaption = hasLongCaption
     ? clip.vibeLabel.slice(0, 28).trim()
     : clip.vibeLabel;
+  const { setReelPlaying } = useStore();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -38,10 +40,19 @@ export const ReelCard: React.FC<ReelCardProps> = ({
 
     if (isActive && !paused) {
       video.play().catch(() => undefined);
+      setReelPlaying(true);
     } else {
       video.pause();
+      if (isActive) setReelPlaying(false);
     }
-  }, [isActive, paused, shouldLoadVideo]);
+  }, [isActive, paused, shouldLoadVideo, setReelPlaying]);
+
+  useEffect(() => {
+    if (!isActive) setReelPlaying(false);
+    return () => {
+      if (isActive) setReelPlaying(false);
+    };
+  }, [isActive, setReelPlaying]);
 
   useEffect(() => {
     setCaptionExpanded(false);
@@ -91,8 +102,8 @@ export const ReelCard: React.FC<ReelCardProps> = ({
 
       <div className="pointer-events-none absolute inset-0 z-[18] bg-[radial-gradient(circle_at_50%_28%,transparent_0,rgba(0,0,0,.05)_34%,rgba(0,0,0,.42)_100%)]" />
       <div
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-28 transition-all duration-300 sm:px-8 md:pb-9 ${
-          captionExpanded ? "pt-56" : "pt-24"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-5 pb-20 transition-all duration-300 sm:px-8 md:pb-9 ${
+          captionExpanded ? "pt-40" : "pt-20"
         }`}
         style={{
           background: captionExpanded
@@ -139,7 +150,7 @@ export const ReelCard: React.FC<ReelCardProps> = ({
               )}
             </span>
           </div>
-          <h2 className="max-w-[82%] text-3xl font-black leading-[1.08] text-white drop-shadow-2xl sm:text-5xl md:text-4xl">
+          <h2 className="max-w-[90%] text-2xl font-black leading-[1.08] text-white drop-shadow-2xl sm:max-w-[82%] sm:text-5xl md:text-4xl">
             {clip.title}
           </h2>
         </motion.div>
