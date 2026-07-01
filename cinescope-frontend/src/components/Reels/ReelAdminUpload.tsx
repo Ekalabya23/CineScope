@@ -138,7 +138,6 @@ export const ReelAdminUpload: React.FC<ReelAdminUploadProps> = ({ onUploaded }) 
       cloudinaryFormData.append("api_key", signature.apiKey);
       cloudinaryFormData.append("timestamp", String(signature.timestamp));
       cloudinaryFormData.append("folder", signature.folder);
-      cloudinaryFormData.append("media_metadata", String(signature.mediaMetadata));
       cloudinaryFormData.append("signature", signature.signature);
       const startedAt = Date.now();
       setUploadStage("Uploading to Cloudinary");

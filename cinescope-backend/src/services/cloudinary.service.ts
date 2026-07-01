@@ -26,7 +26,7 @@ export const CloudinaryService = {
     const timestamp = Math.round(Date.now() / 1000);
     const folder = "cinescope/reels";
       const signature = cloudinary.utils.api_sign_request(
-      { timestamp, folder, media_metadata: false },
+      { timestamp, folder },
       ENV.CLOUDINARY_API_SECRET,
     );
 
@@ -35,7 +35,6 @@ export const CloudinaryService = {
       apiKey: ENV.CLOUDINARY_API_KEY,
       timestamp,
       folder,
-      mediaMetadata: false,
       signature,
     };
   },
