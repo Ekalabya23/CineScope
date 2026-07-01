@@ -138,6 +138,7 @@ export const ReelAdminUpload: React.FC<ReelAdminUploadProps> = ({ onUploaded }) 
       cloudinaryFormData.append("api_key", signature.apiKey);
       cloudinaryFormData.append("timestamp", String(signature.timestamp));
       cloudinaryFormData.append("folder", signature.folder);
+      cloudinaryFormData.append("media_metadata", String(signature.mediaMetadata));
       cloudinaryFormData.append("signature", signature.signature);
       const startedAt = Date.now();
       setUploadStage("Uploading to Cloudinary");
@@ -200,7 +201,10 @@ export const ReelAdminUpload: React.FC<ReelAdminUploadProps> = ({ onUploaded }) 
       setError(
         err.code === "ECONNABORTED"
           ? "Upload timed out. Check Cloudinary/network and try again."
-          : err.response?.data?.message || "Upload failed.",
+          : err.response?.data?.error?.message ||
+            err.response?.data?.message ||
+            err.message ||
+            "Upload failed.",
       );
     } finally {
       setSubmitting(false);
