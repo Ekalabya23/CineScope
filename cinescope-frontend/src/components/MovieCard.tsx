@@ -121,16 +121,24 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     : isWide
       ? "w-[280px] sm:w-[360px]"
       : size === "compact"
-        ? "w-32 sm:w-36"
-        : "w-40 sm:w-44 md:w-48";
+        ? "w-28 sm:w-36"
+        : "w-36 sm:w-40 md:w-48";
 
   return (
     <motion.article
       layout
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={openDetails}
+      onClick={(e) => {
+        if (!isHovered) {
+          e.stopPropagation();
+          setIsHovered(true);
+        } else {
+          openDetails();
+        }
+      }}
       whileHover={{ y: -10, scale: 1.045, zIndex: 30 }}
+      whileTap={{ scale: 0.97 }}
       transition={{ type: "spring", stiffness: 260, damping: 26 }}
       className={`group relative ${cardSize} ${fluid ? "" : "flex-none"} cursor-pointer overflow-hidden rounded-xl border bg-zinc-950 shadow-2xl`}
       style={{
@@ -160,11 +168,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
       <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">
         {match !== null && (
-          <span className="rounded-full bg-black/70 px-2 py-1 text-[10px] font-black text-emerald-300 backdrop-blur">
+          <span className="rounded-full bg-black/70 px-2 py-1 text-[11px] font-black text-emerald-300 backdrop-blur">
             {match}% Match
           </span>
         )}
-        <span className="rounded-full bg-black/55 px-2 py-1 text-[10px] font-bold text-yellow-300 backdrop-blur">
+        <span className="rounded-full bg-black/55 px-2 py-1 text-[11px] font-bold text-yellow-300 backdrop-blur">
           ★ {getRating(movie)}
         </span>
       </div>
@@ -173,7 +181,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         <h4 className="line-clamp-2 text-sm font-black leading-tight text-white md:text-base">
           {title}
         </h4>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] font-semibold text-zinc-300">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold text-zinc-300">
           {releaseYear && <span>{releaseYear}</span>}
           <span className="rounded bg-white/10 px-1.5 py-0.5 uppercase">{mediaType}</span>
           {genres[0] && <span className="truncate">{genres[0]}</span>}
@@ -196,14 +204,14 @@ export const MovieCard: React.FC<MovieCardProps> = ({
               {(recommendation.emotionalTags || genres).slice(0, 3).map((tag: string) => (
                 <span
                   key={tag}
-                  className="rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+                  className="rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide"
                   style={{ borderColor: theme.border, color: theme.accent }}
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <p className="line-clamp-2 text-[10px] text-zinc-400">
+            <p className="line-clamp-2 text-[11px] text-zinc-400">
               {recommendation.recommendationReason ||
                 "Curated from live title metadata and collection context."}
             </p>
@@ -213,13 +221,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                   e.stopPropagation();
                   openDetails();
                 }}
-                className="h-8 flex-1 rounded-lg bg-white text-[10px] font-black uppercase tracking-wide text-black"
+                className="min-h-[44px] flex-1 rounded-lg bg-white text-[11px] font-black uppercase tracking-wide text-black"
               >
                 Details
               </button>
               <button
                 onClick={handleWatchlistToggle}
-                className="h-8 rounded-lg border border-white/10 bg-white/10 px-3 text-[10px] font-bold text-white"
+                className="min-h-[44px] rounded-lg border border-white/10 bg-white/10 px-4 text-[11px] font-bold text-white"
               >
                 {isSaved ? "Saved" : "+"}
               </button>
@@ -232,7 +240,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                     e.stopPropagation();
                     trackRecommendationInteraction("trailer_click");
                   }}
-                  className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/10 text-[10px] font-bold text-white"
+                  className="grid min-h-[44px] min-w-[44px] place-items-center rounded-lg border border-white/10 bg-white/10 text-[11px] font-bold text-white"
                 >
                   ▶
                 </a>

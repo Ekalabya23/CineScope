@@ -9,12 +9,12 @@ export const TasteProfilePanel: React.FC<{ profile: any }> = ({ profile }) => {
   const scores = Object.entries(profile.engagementScore || {}).slice(0, 6);
 
   return (
-    <section className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl lg:grid-cols-[1fr_1.2fr]">
+    <section className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.035] p-4 md:p-5 backdrop-blur-xl lg:grid-cols-[1fr_1.2fr]">
       <div className="space-y-4">
         <p className="text-[10px] font-black uppercase tracking-[0.26em]" style={{ color: theme.accent }}>
           AI taste profile
         </p>
-        <h2 className="text-3xl font-black text-white">Your Cinematic Signature</h2>
+        <h2 className="text-2xl sm:text-3xl font-black text-white">Your Cinematic Signature</h2>
         <p className="text-sm leading-6 text-zinc-400">
           {profile.behaviorSummary ||
             "CineScope is learning your emotional viewing rhythm and recommendation clusters."}
@@ -33,11 +33,11 @@ export const TasteProfilePanel: React.FC<{ profile: any }> = ({ profile }) => {
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl bg-black/25 p-4">
           <p className="text-[10px] uppercase tracking-wider text-zinc-500">Viewing pattern</p>
-          <p className="mt-2 text-2xl font-black text-white">{profile.watchPattern}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-black text-white">{profile.watchPattern}</p>
         </div>
         <div className="rounded-2xl bg-black/25 p-4">
           <p className="text-[10px] uppercase tracking-wider text-zinc-500">Dominant mood</p>
-          <p className="mt-2 text-2xl font-black capitalize" style={{ color: theme.accent }}>
+          <p className="mt-2 text-xl sm:text-2xl font-black capitalize" style={{ color: theme.accent }}>
             {moods[0]?.replace("-", " ") || "Adaptive"}
           </p>
         </div>

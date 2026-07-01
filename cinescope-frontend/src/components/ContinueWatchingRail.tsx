@@ -23,7 +23,7 @@ export const ContinueWatchingRail: React.FC<{ items: any[] }> = ({ items }) => {
           <motion.article
             key={`${item.mediaId}-${item.mediaType}`}
             whileHover={{ y: -6 }}
-            className="relative w-72 flex-none overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
+            className="relative w-64 sm:w-72 flex-none overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
           >
             <div className="aspect-video bg-zinc-900">
               <img
@@ -53,7 +53,7 @@ export const ContinueWatchingRail: React.FC<{ items: any[] }> = ({ items }) => {
                 onClick={() =>
                   navigate(`/media/${item.mediaType || "movie"}/${item.mediaId}`)
                 }
-                className="mt-2 h-9 w-full rounded-xl bg-white text-[10px] font-black uppercase tracking-wider text-black transition hover:bg-zinc-200"
+                className="mt-2 min-h-[44px] w-full rounded-xl bg-white text-[10px] font-black uppercase tracking-wider text-black transition hover:bg-zinc-200"
               >
                 View Details
               </button>

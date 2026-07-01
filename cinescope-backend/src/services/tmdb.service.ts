@@ -73,6 +73,8 @@ const getTmdb = async <T>(
 };
 
 export const TmdbService = {
+  rawGet: getTmdb,
+  
   getTrending: async (
     type: "movie" | "tv" = "movie",
     timeWindow: "day" | "week" = "week",

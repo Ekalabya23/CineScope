@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const inferCountryFromLocale = () => {
-  const locale = navigator.language || Intl.DateTimeFormat().resolvedOptions().locale || "";
+  const locale =
+    navigator.language || Intl.DateTimeFormat().resolvedOptions().locale || "";
   const country = locale.split("-")[1];
   if (country) return country.toUpperCase();
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -10,7 +11,9 @@ const inferCountryFromLocale = () => {
 };
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1",
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    "http://cinescope-50ap.onrender.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -27,7 +30,8 @@ apiClient.interceptors.request.use(
       delete config.headers["Content-Type"];
     }
     if (config.headers) {
-      const locale = navigator.language || Intl.DateTimeFormat().resolvedOptions().locale;
+      const locale =
+        navigator.language || Intl.DateTimeFormat().resolvedOptions().locale;
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       config.headers["X-CineScope-Timezone"] = timezone;
       config.headers["X-CineScope-Language"] = locale;

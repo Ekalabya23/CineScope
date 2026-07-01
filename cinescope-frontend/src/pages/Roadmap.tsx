@@ -144,6 +144,7 @@ const RoadmapSkeleton = () => (
 
 export const Roadmap: React.FC = () => {
   const [title, setTitle] = useState("Daredevil: Born Again");
+  const [submittedTitle, setSubmittedTitle] = useState("");
   const [roadmap, setRoadmap] = useState<RoadmapPayload | null>(null);
   const [activeMode, setActiveMode] = useState<RoadmapMode>("Essential Only");
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -178,6 +179,7 @@ export const Roadmap: React.FC = () => {
   const generateRoadmap = async (inputTitle = title) => {
     const cleanTitle = inputTitle.trim();
     if (!cleanTitle) return;
+    setSubmittedTitle(cleanTitle);
     setLoading(true);
     setError("");
     try {
@@ -216,7 +218,7 @@ export const Roadmap: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-red-300">
               AI continuity navigator
             </p>
-            <h1 className="max-w-4xl text-5xl font-black leading-none text-white md:text-7xl">
+            <h1 className="max-w-4xl text-3xl sm:text-5xl font-black leading-none text-white md:text-7xl">
               Build the perfect watch roadmap
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-zinc-300 md:text-base">
@@ -243,6 +245,8 @@ export const Roadmap: React.FC = () => {
                 />
                 <RoadmapSearchSuggestions
                   query={title}
+                  submittedQuery={submittedTitle}
+                  isGenerating={loading}
                   onPick={(s) => {
                     setTitle(s.title);
                     generateRoadmap(s.title);
@@ -267,7 +271,7 @@ export const Roadmap: React.FC = () => {
                     setTitle(example);
                     generateRoadmap(example);
                   }}
-                  className="rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[10px] font-bold text-zinc-200 transition hover:bg-white/20"
+                  className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-[10px] font-bold text-zinc-200 transition hover:bg-white/20"
                 >
                   {example}
                 </button>
@@ -404,7 +408,7 @@ export const Roadmap: React.FC = () => {
                   <button
                     key={mode}
                     onClick={() => setActiveMode(mode)}
-                    className={`rounded-full border px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] transition ${
+                    className={`rounded-full border px-4 py-2 min-h-[44px] text-[10px] font-black uppercase tracking-[0.16em] transition ${
                       activeMode === mode
                         ? "border-white bg-white text-black"
                         : "border-white/10 bg-white/10 text-zinc-200 hover:bg-white/20"
@@ -416,7 +420,7 @@ export const Roadmap: React.FC = () => {
               </div>
 
               {viewingSections.length > 0 && (
-                <div className="grid gap-4 xl:grid-cols-3">
+                <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
                   {viewingSections.map((section) => {
                     const style = sectionStyles[section.label];
 
@@ -505,6 +509,7 @@ export const Roadmap: React.FC = () => {
                         transition={{ duration: 0.36, delay: index * 0.03 }}
                         onMouseEnter={() => setActiveNode(node.id)}
                         onMouseLeave={() => setActiveNode(null)}
+                        onClick={() => setActiveNode(activeNode === node.id ? null : node.id)}
                         className={`relative grid gap-4 md:w-[48%] ${
                           leftSide ? "md:mr-auto" : "md:ml-auto"
                         }`}

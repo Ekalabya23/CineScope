@@ -17,12 +17,12 @@ export const RootLayout: React.FC = () => {
       <Navbar />
 
       {/* Core Dynamic Content Window Panel */}
-      <main className="flex-1 w-full relative z-10">
+      <main className="flex-1 w-full relative z-10 pb-24 md:pb-0">
         <Outlet />
       </main>
 
       {/* Decorative Cinematic Background Glow Element */}
-      <div className="fixed bottom-0 left-0 w-full h-96 bg-[radial-gradient(ellipse_at_bottom,rgba(229,9,20,0.05)_0%,transparent_70%)] pointer-events-none z-0" />
+      <div className="fixed bottom-0 left-0 w-full h-48 md:h-96 bg-[radial-gradient(ellipse_at_bottom,rgba(229,9,20,0.05)_0%,transparent_70%)] pointer-events-none z-0" />
     </div>
   );
 };

@@ -13,6 +13,7 @@ import {
   imageUrl,
   normalizeGenres,
 } from "../utils/media";
+import { Play, Plus, Info } from "lucide-react";
 
 export const CinematicHero: React.FC<{ hero: any; fallbackItems?: any[] }> = ({
   hero,
@@ -49,7 +50,7 @@ export const CinematicHero: React.FC<{ hero: any; fallbackItems?: any[] }> = ({
   if (!active) return null;
 
   return (
-    <section className="relative min-h-[92vh] overflow-hidden bg-black">
+    <section className="relative h-[100svh] md:h-auto md:min-h-[92vh] overflow-hidden bg-black">
       <AnimatePresence mode="wait">
         <motion.img
           key={active.id}
@@ -63,92 +64,99 @@ export const CinematicHero: React.FC<{ hero: any; fallbackItems?: any[] }> = ({
         />
       </AnimatePresence>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050609] via-[#050609]/38 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#050609] via-[#050609]/40 to-transparent" />
-      <div className="absolute inset-0 opacity-80" style={{ background: theme.gradient }} />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#050609] via-[#050609]/60 to-transparent" />
+      <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-[#050609] via-[#050609]/40 to-transparent" />
+      <div className="absolute inset-0 opacity-0 md:opacity-80" style={{ background: theme.gradient }} />
 
-      <div className="relative z-10 flex min-h-[92vh] max-w-7xl flex-col justify-end px-5 pb-24 pt-32 md:px-12 lg:px-16">
+      <div className="relative z-10 flex h-full md:min-h-[92vh] max-w-7xl flex-col justify-end px-5 pb-[110px] md:pb-24 pt-24 md:pt-32 md:px-12 lg:px-16">
         <motion.div
           key={`${active.id}-copy`}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65 }}
-          className="max-w-3xl space-y-5"
+          className="max-w-3xl space-y-4 md:space-y-5 flex flex-col justify-end"
         >
           <div className="flex flex-wrap items-center gap-2">
             <span
-              className="rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] backdrop-blur"
+              className="rounded-full border px-2 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[10px] font-black uppercase tracking-[0.22em] backdrop-blur"
               style={{ borderColor: theme.border, color: theme.accent }}
             >
-              AI cinematic pick
+              AI pick
             </span>
             {match !== null && (
-              <span className="rounded-full bg-black/45 px-3 py-1 text-xs font-bold text-emerald-300 backdrop-blur">
+              <span className="rounded-full bg-black/45 px-2 py-0.5 md:px-3 md:py-1 text-[10px] md:text-xs font-bold text-emerald-300 backdrop-blur">
                 {match}% Match
               </span>
             )}
-            <span className="rounded-full bg-black/45 px-3 py-1 text-xs font-bold text-yellow-300 backdrop-blur">
+            <span className="rounded-full bg-black/45 px-2 py-0.5 md:px-3 md:py-1 text-[10px] md:text-xs font-bold text-yellow-300 backdrop-blur">
               ★ {getRating(active)}
             </span>
           </div>
 
-          <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-normal text-white md:text-8xl">
+          <h1 className="max-w-5xl text-[11vw] sm:text-[9vw] md:text-8xl font-black uppercase leading-[0.85] tracking-tighter md:tracking-normal text-white">
             {getTitle(active)}
           </h1>
 
           <div className="flex flex-wrap gap-2">
-            {(recommendation.emotionalTags || normalizeGenres(active)).slice(0, 4).map((tag: string) => (
-              <span key={tag} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-zinc-100 backdrop-blur">
+            {(recommendation.emotionalTags || normalizeGenres(active)).slice(0, 3).map((tag: string) => (
+              <span key={tag} className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] md:text-xs font-semibold text-zinc-100 backdrop-blur">
                 {tag}
               </span>
             ))}
           </div>
 
-          <p className="max-w-2xl text-sm leading-7 text-zinc-300 md:text-base">
-            {active.overview}
-          </p>
+          {/* Desktop Only Details */}
+          <div className="hidden md:block space-y-5">
+            <p className="max-w-2xl text-sm leading-7 text-zinc-300 md:text-base">
+              {active.overview}
+            </p>
 
-          <div className="rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-zinc-200 backdrop-blur-xl md:max-w-2xl">
-            <span className="font-black" style={{ color: theme.accent }}>
-              AI Insight:
-            </span>{" "}
-            {recommendation.recommendationReason ||
-              active?.heroMetadata?.selectionModel ||
-              "Chosen for cinematic visual impact, audience momentum, and mood alignment."}
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-zinc-200 backdrop-blur-xl md:max-w-2xl">
+              <span className="font-black" style={{ color: theme.accent }}>
+                AI Insight:
+              </span>{" "}
+              {recommendation.recommendationReason ||
+                active?.heroMetadata?.selectionModel ||
+                "Chosen for cinematic visual impact, audience momentum, and mood alignment."}
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 pt-2 md:pt-0">
             <button
               onClick={() => navigate(`/media/${mediaType}/${active.id}`)}
-              className="rounded-xl bg-white px-6 py-3 text-xs font-black uppercase tracking-wider text-black shadow-xl transition hover:scale-[1.02]"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 h-12 md:h-12 md:px-8 rounded-xl bg-white text-xs md:text-sm font-black uppercase tracking-wider text-black shadow-xl transition hover:scale-[1.02]"
             >
-              View Details
+              <Play className="w-4 h-4 fill-black" />
+              <span>Details</span>
             </button>
-            <button className="rounded-xl border border-white/10 bg-white/10 px-6 py-3 text-xs font-bold uppercase tracking-wider text-white backdrop-blur transition hover:bg-white/15">
-              Add to Watchlist
+            <button className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-black/20 backdrop-blur-md transition hover:bg-white/10 text-white">
+              <Plus className="w-6 h-6" />
             </button>
             <button
               onClick={() => setExplainOpen(true)}
-              className="rounded-xl border px-6 py-3 text-xs font-bold uppercase tracking-wider backdrop-blur transition hover:bg-white/10"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border bg-black/20 backdrop-blur-md transition hover:bg-white/10"
               style={{ borderColor: theme.border, color: theme.accent }}
             >
-              AI Explanation
+              <Info className="w-5 h-5" />
             </button>
           </div>
         </motion.div>
 
-        <div className="absolute bottom-10 right-5 z-20 flex gap-2 md:right-12">
+        {/* Carousel Dots */}
+        <div className="absolute bottom-[80px] md:bottom-10 right-4 md:right-12 z-20 flex gap-0">
           {slides.map((slide, slideIndex) => (
-            <button
-              key={slide.id}
-              onClick={() => setIndex(slideIndex)}
-              className="h-1.5 rounded-full transition-all"
-              style={{
-                width: slideIndex === index ? 34 : 9,
-                background: slideIndex === index ? theme.accent : "rgba(255,255,255,.34)",
-              }}
-              aria-label={`Show ${getTitle(slide)}`}
-            />
+            <div key={slide.id} className="p-2 md:p-3">
+              <button
+                onClick={() => setIndex(slideIndex)}
+                className="h-1.5 rounded-full transition-all"
+                style={{
+                  width: slideIndex === index ? 24 : 6,
+                  background: slideIndex === index ? theme.accent : "rgba(255,255,255,.34)",
+                }}
+                aria-label={`Show ${getTitle(slide)}`}
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -166,7 +174,7 @@ export const CinematicHero: React.FC<{ hero: any; fallbackItems?: any[] }> = ({
               initial={{ y: 20, scale: 0.98 }}
               animate={{ y: 0, scale: 1 }}
               exit={{ y: 20, scale: 0.98 }}
-              className="max-w-lg rounded-3xl border border-white/10 bg-zinc-950/95 p-6 shadow-2xl"
+              className="max-w-lg rounded-3xl border border-white/10 bg-zinc-950/95 p-6 shadow-2xl overflow-y-auto max-h-[80vh]"
               onClick={(e) => e.stopPropagation()}
             >
               <p className="text-[10px] font-black uppercase tracking-[0.28em]" style={{ color: theme.accent }}>
@@ -177,7 +185,7 @@ export const CinematicHero: React.FC<{ hero: any; fallbackItems?: any[] }> = ({
                 {recommendation.recommendationReason ||
                   "This title scored highly across backdrop quality, audience popularity, emotional tone, and behavioral similarity."}
               </p>
-              <div className="mt-5 grid grid-cols-3 gap-2">
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
                   ["Match", match !== null ? `${match}%` : "Learning"],
                   ["Confidence", recommendation.confidence ? `${recommendation.confidence}%` : "Learning"],

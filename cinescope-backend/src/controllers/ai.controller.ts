@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { Chat } from "../models/chat.model";
-import { GeminiService } from "../ai/gemini.service";
+import { GroqService } from "../ai/groq.service";
 import { TmdbService } from "../services/tmdb.service";
 import { AiContextBuilder } from "../services/aiContextBuilder";
 import { AiInteraction } from "../models/aiInteraction.model";
@@ -30,7 +30,7 @@ export const handleAiRecommendation = catchAsync(
     const orderedHistory = history.reverse();
 
     // 2. Dispatch configuration arrays to AI Engine
-    const aiAnalysis = await GeminiService.analyzePrompt(
+    const aiAnalysis = await GroqService.analyzePrompt(
       prompt,
       orderedHistory,
       enrichedContext,
@@ -64,7 +64,7 @@ export const handleAiRecommendation = catchAsync(
         userId,
         role: "model",
         parts: [
-          { text: JSON.stringify({ explanation: aiAnalysis.explanation }) },
+          { text: JSON.stringify(aiAnalysis) },
         ],
       }),
       AiInteraction.create({

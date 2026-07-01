@@ -15,6 +15,8 @@ export type RoadmapSuggestion = {
 
 type Props = {
   query: string;
+  submittedQuery?: string;
+  isGenerating?: boolean;
   onPick: (suggestion: RoadmapSuggestion) => void;
   className?: string;
 };
@@ -34,6 +36,8 @@ const SkeletonCard = () => (
 
 export const RoadmapSearchSuggestions: React.FC<Props> = ({
   query,
+  submittedQuery,
+  isGenerating,
   onPick,
   className,
 }) => {
@@ -50,14 +54,15 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
   const firstItemIdRef = useRef<string | null>(null);
 
   const normalizedQuery = query.trim();
+  const normalizedSubmitted = submittedQuery?.trim().toLowerCase() || "";
 
   const canSearch = useMemo(
-    () => normalizedQuery.length >= 2,
-    [normalizedQuery],
+    () => normalizedQuery.length >= 2 && normalizedQuery.toLowerCase() !== normalizedSubmitted,
+    [normalizedQuery, normalizedSubmitted],
   );
 
   useEffect(() => {
-    if (!canSearch) {
+    if (!canSearch || isGenerating) {
       setIsOpen(false);
       setStatus("idle");
       setResults([]);
@@ -94,7 +99,7 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
       window.clearTimeout(t);
       controller.abort();
     };
-  }, [apiClient, canSearch, normalizedQuery]);
+  }, [apiClient, canSearch, normalizedQuery, isGenerating]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -168,14 +173,14 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 8, filter: "blur(6px)" }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="z-50 mt-2 max-h-[420px] overflow-y-auto rounded-[1.4rem] border border-white/15 bg-[#0c0d14]/[0.98] p-3 shadow-[0_12px_48px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur-3xl"
+            className="z-50 mt-2 max-h-[60vh] sm:max-h-[420px] overflow-y-auto rounded-[1.4rem] border border-white/15 bg-[#0c0d14]/[0.98] p-3 shadow-[0_12px_48px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur-xl sm:backdrop-blur-3xl"
           >
             <div className="mb-2 flex items-center justify-between gap-3 px-2">
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-zinc-500">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-zinc-500">
                 Cinematic suggestions
               </p>
               {status === "loading" && (
-                <p className="text-[10px] font-bold text-zinc-400">Scanning…</p>
+                <p className="text-[11px] font-bold text-zinc-400">Scanning…</p>
               )}
             </div>
 
@@ -245,7 +250,7 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">
+                            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-zinc-500">
                               {s.type === "tv" ? "Series" : "Film"} ·{" "}
                               {s.year || "TBA"}
                             </p>
@@ -253,17 +258,17 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
                               {s.title}
                             </p>
                           </div>
-                          <div className="flex-none rounded-full border border-white/10 bg-black/30 px-2 py-1 text-[10px] font-black text-zinc-200">
+                          <div className="flex-none rounded-full border border-white/10 bg-black/30 px-2 py-1 text-[11px] font-black text-zinc-200">
                             ★ {s.rating ? Number(s.rating).toFixed(1) : "—"}
                           </div>
                         </div>
 
                         <div className="mt-2 flex items-center gap-2">
-                          <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-bold text-zinc-300">
+                          <span className="rounded-full bg-white/10 px-2 py-1 text-[11px] font-bold text-zinc-300">
                             {s.franchise}
                           </span>
                           {isActive && (
-                            <span className="rounded-full bg-red-400/20 px-2 py-1 text-[10px] font-black text-red-100">
+                            <span className="rounded-full bg-red-400/20 px-2 py-1 text-[11px] font-black text-red-100">
                               Enter
                             </span>
                           )}
@@ -276,7 +281,7 @@ export const RoadmapSearchSuggestions: React.FC<Props> = ({
 
             <div className="pointer-events-none mt-3 px-2">
               <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-              <p className="mt-3 text-[10px] font-bold text-zinc-500">
+              <p className="mt-3 hidden sm:flex text-[11px] font-bold text-zinc-500">
                 Use ↑/↓ to navigate · Enter to select · Esc to close
               </p>
             </div>

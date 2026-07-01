@@ -3,6 +3,7 @@ import { ReelClip } from "../models/reelClip.model";
 import { UserReelAffinity } from "../models/userReelAffinity.model";
 import { formatMediaItems } from "../utils/mediaFormatter";
 import { TmdbService } from "./tmdb.service";
+import { GroqService } from "../ai/groq.service";
 
 type ScoreMapLike = Map<string, number> | Record<string, number> | undefined;
 
@@ -201,103 +202,68 @@ export const AdaptiveRecommendationService = {
     const affinity = await UserReelAffinity.findOne({ userId }).lean();
     if (!affinity || (affinity.interactionCount || 0) < 2) return [];
 
-    const sections: AdaptiveSectionConfig[] = [];
     const topRegions = topEntries(affinity.regionScores as ScoreMapLike, 3);
     const topCountries = topEntries(affinity.countryScores as ScoreMapLike, 3);
     const topLanguages = topEntries(affinity.languageScores as ScoreMapLike, 2);
-    const topGenres = topEntries(affinity.genreScores as ScoreMapLike, 2);
+    const topGenres = topEntries(affinity.genreScores as ScoreMapLike, 4);
     const topActors = topEntries(affinity.actorScores as ScoreMapLike, 2);
     const actorNames = await getActorNames(topActors.map((entry) => entry.key));
 
-    topRegions.forEach(({ key, score }) => {
-      const profileForRegion = regionProfiles[key.toLowerCase()];
-      if (!profileForRegion) return;
-      sections.push({
-        key,
-        title: profileForRegion.title || key,
-        subtitle: profileForRegion.subtitle || "Personalized from your regional viewing signals.",
-        mood: profileForRegion.mood || "emotional",
-        emotionalTone: profileForRegion.emotionalTone || "regional affinity",
-        visualTheme: profileForRegion.visualTheme || "local spotlight",
-        layout: profileForRegion.layout || "poster-row",
-        mediaType: profileForRegion.mediaType || "mixed",
-        params: profileForRegion.params,
-        reason: profileForRegion.reason || "Your recent behavior is shaping this regional rail.",
-        signalStrength: score,
-      });
-    });
+    const affinityContext = {
+      topRegions: topRegions.map(r => r.key),
+      topCountries: topCountries.map(c => countryLabels[c.key.toUpperCase()] || c.key),
+      topLanguages: topLanguages.map(l => l.key),
+      topGenres: topGenres.map(g => genreNamesById[Number(g.key)] || g.key),
+      topActors: topActors.map(a => actorNames[a.key] || a.key)
+    };
 
-    topCountries.forEach(({ key, score }) => {
-      if (sections.some((section) => section.params.with_origin_country === key)) return;
-      const label = countryLabels[key.toUpperCase()] || `${key.toUpperCase()} Country`;
-      sections.push({
-        key: `country-${key}`,
-        title: `${label} Picks For You`,
-        subtitle: `A country-focused rail generated from your recent viewing and reel interactions.`,
-        mood: key.toUpperCase() === "KR" ? "emotional" : key.toUpperCase() === "JP" ? "cyberpunk" : "adrenaline",
-        emotionalTone: "country affinity",
-        visualTheme: "local cinema signal",
-        layout: "poster-row",
-        mediaType: "mixed",
-        params: { with_origin_country: key.toUpperCase(), sort_by: "popularity.desc" },
-        reason: `Your behavior is showing stronger interest in ${label.toLowerCase()} titles.`,
-        signalStrength: score,
-      });
-    });
+    let sections: AdaptiveSectionConfig[] = await GroqService.generateDynamicRails(affinityContext, 8);
 
-    topLanguages.forEach(({ key, score }) => {
-      const country = inferCountryFromLanguage(key);
-      if (country && sections.some((section) => section.params.with_origin_country === country)) return;
-      sections.push({
-        key: `language-${key}`,
-        title: `${key.toUpperCase()} Language Momentum`,
-        subtitle: "Language preference inferred from what you keep watching, not a manual filter.",
-        mood: key === "ko" ? "emotional" : key === "ja" ? "cyberpunk" : "slow-burn",
-        emotionalTone: "language affinity",
-        visualTheme: "subtitle glow",
-        layout: "poster-row",
-        mediaType: "mixed",
-        params: { with_original_language: key, sort_by: "popularity.desc" },
-        reason: `Your recent behavior is favoring ${key.toUpperCase()} language titles.`,
-        signalStrength: score,
+    // Fallback if Groq fails or returns empty
+    if (!sections || sections.length === 0) {
+      topRegions.forEach(({ key, score }) => {
+        const profileForRegion = regionProfiles[key.toLowerCase()];
+        if (!profileForRegion) return;
+        sections.push({
+          key,
+          title: profileForRegion.title || key,
+          subtitle: profileForRegion.subtitle || "Personalized from your regional viewing signals.",
+          mood: profileForRegion.mood || "emotional",
+          emotionalTone: profileForRegion.emotionalTone || "regional affinity",
+          visualTheme: profileForRegion.visualTheme || "local spotlight",
+          layout: profileForRegion.layout || "poster-row",
+          mediaType: profileForRegion.mediaType || "mixed",
+          params: profileForRegion.params,
+          reason: profileForRegion.reason || "Your recent behavior is shaping this regional rail.",
+          signalStrength: score,
+        });
       });
-    });
+      
+      topGenres.forEach(({ key, score }) => {
+        if (sections.length >= 8) return;
+        const genreId = Number(key);
+        const genreName = genreNamesById[genreId] || "Your Favorite Genre";
+        sections.push({
+          key: `genre-${key}`,
+          title: `${genreName} That Matches You`,
+          subtitle: "Genre affinity balanced with quality and current audience pull.",
+          mood: genreId === 16 ? "cozy" : genreId === 10749 ? "emotional" : genreId === 28 ? "adrenaline" : "mind-bending",
+          emotionalTone: "genre affinity",
+          visualTheme: "behavioral match",
+          layout: "poster-row",
+          mediaType: "mixed",
+          params: { with_genres: key, sort_by: "popularity.desc" },
+          reason: `Your recent behavior is consistently leaning toward ${genreName}.`,
+          signalStrength: score,
+        });
+      });
+    }
 
-    topActors.forEach(({ key, score }) => {
-      const actorName = actorNames[key] || "A Favorite Performer";
-      sections.push({
-        key: `actor-${key}`,
-        title: `More With ${actorName}`,
-        subtitle: "Films and series connected to performers you keep engaging with.",
-        mood: "adrenaline",
-        emotionalTone: "performer affinity",
-        visualTheme: "star signal",
-        layout: "large-carousel",
-        mediaType: "mixed",
-        params: { with_cast: key, with_people: key, sort_by: "popularity.desc" },
-        reason: `You have been engaging with clips featuring ${actorName}.`,
-        signalStrength: score,
-      });
-    });
-
-    topGenres.forEach(({ key, score }) => {
-      if (sections.length >= 8) return;
-      const genreId = Number(key);
-      const genreName = genreNamesById[genreId] || "Your Favorite Genre";
-      sections.push({
-        key: `genre-${key}`,
-        title: `${genreName} That Matches You`,
-        subtitle: "Genre affinity balanced with quality and current audience pull.",
-        mood: genreId === 16 ? "cozy" : genreId === 10749 ? "emotional" : genreId === 28 ? "adrenaline" : "mind-bending",
-        emotionalTone: "genre affinity",
-        visualTheme: "behavioral match",
-        layout: "poster-row",
-        mediaType: "mixed",
-        params: { with_genres: key, sort_by: "popularity.desc" },
-        reason: `Your recent behavior is consistently leaning toward ${genreName}.`,
-        signalStrength: score,
-      });
-    });
+    // Default signal strength if not provided by Groq
+    sections = sections.map(s => ({
+      ...s,
+      signalStrength: s.signalStrength || 85
+    }));
 
     const resolved = await Promise.allSettled(
       sections.slice(0, 8).map((section) => makeSection(section, profile, limit)),

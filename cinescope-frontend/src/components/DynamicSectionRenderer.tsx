@@ -67,7 +67,7 @@ export const DynamicSectionRenderer: React.FC<{ section: any }> = ({ section }) 
           className="grid gap-4 overflow-hidden rounded-3xl border bg-white/[0.03] p-4 backdrop-blur-xl lg:grid-cols-[1.05fr_1.5fr]"
           style={{ borderColor: theme.border, boxShadow: `0 0 38px ${theme.soft}` }}
         >
-          <div className="relative min-h-[360px] overflow-hidden rounded-2xl bg-black">
+          <div className="relative min-h-[220px] md:min-h-[360px] overflow-hidden rounded-2xl bg-black">
             <img
               src={imageUrl(getBackdropPath(feature), "w1280")}
               alt={getTitle(feature)}
@@ -78,7 +78,7 @@ export const DynamicSectionRenderer: React.FC<{ section: any }> = ({ section }) 
               <span className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
                 Featured emotional match
               </span>
-              <h3 className="text-3xl font-black text-white">{getTitle(feature)}</h3>
+              <h3 className="text-2xl md:text-3xl font-black text-white">{getTitle(feature)}</h3>
               <p className="line-clamp-3 text-sm leading-6 text-zinc-300">{feature.overview}</p>
             </div>
           </div>
@@ -103,7 +103,7 @@ export const DynamicSectionRenderer: React.FC<{ section: any }> = ({ section }) 
       <SectionShell section={section}>
         <div className="grid gap-4 lg:grid-cols-[1.15fr_1.85fr]">
           <div
-            className="relative min-h-[320px] overflow-hidden rounded-2xl border bg-black"
+            className="relative min-h-[180px] md:min-h-[320px] overflow-hidden rounded-2xl border bg-black"
             style={{ borderColor: theme.border }}
           >
             <img
@@ -116,7 +116,7 @@ export const DynamicSectionRenderer: React.FC<{ section: any }> = ({ section }) 
               <p className="text-[10px] font-black uppercase tracking-[0.24em]" style={{ color: theme.accent }}>
                 Featured in {section.title}
               </p>
-              <h3 className="mt-2 text-3xl font-black text-white">{getTitle(feature)}</h3>
+              <h3 className="mt-2 text-2xl md:text-3xl font-black text-white">{getTitle(feature)}</h3>
               <p className="mt-2 line-clamp-3 text-sm leading-6 text-zinc-300">
                 {feature.overview}
               </p>
@@ -143,22 +143,22 @@ export const DynamicSectionRenderer: React.FC<{ section: any }> = ({ section }) 
     const item = items[0];
     return (
       <SectionShell section={section}>
-        <div className="relative h-[360px] overflow-hidden rounded-3xl border bg-black" style={{ borderColor: theme.border }}>
-          <img
-            src={imageUrl(getBackdropPath(item), "original")}
-            alt={getTitle(item)}
-            className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 hover:scale-105"
-          />
-          <div className="absolute inset-0" style={{ background: theme.gradient }} />
-          <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
-            <p className="text-[10px] font-black uppercase tracking-[0.28em]" style={{ color: theme.accent }}>
-              {section.recommendationReason}
-            </p>
-            <h3 className="mt-2 max-w-3xl text-4xl font-black text-white md:text-6xl">
-              {getTitle(item)}
-            </h3>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-300">{item.overview}</p>
-          </div>
+          <div className="relative h-[220px] md:h-[360px] overflow-hidden rounded-3xl border bg-black" style={{ borderColor: theme.border }}>
+            <img
+              src={imageUrl(getBackdropPath(item), "original")}
+              alt={getTitle(item)}
+              className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-700 hover:scale-105"
+            />
+            <div className="absolute inset-0" style={{ background: theme.gradient }} />
+            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+              <p className="text-[10px] font-black uppercase tracking-[0.28em]" style={{ color: theme.accent }}>
+                {section.recommendationReason}
+              </p>
+              <h3 className="mt-2 max-w-3xl text-2xl sm:text-4xl font-black text-white md:text-6xl">
+                {getTitle(item)}
+              </h3>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-300 line-clamp-2 md:line-clamp-none">{item.overview}</p>
+            </div>
         </div>
       </SectionShell>
     );

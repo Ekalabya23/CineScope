@@ -20,6 +20,7 @@ import roadmapRoutes from "./routes/roadmap.routes";
 import searchRoutes from "./routes/search.routes";
 import exploreRoutes from "./routes/explore.routes";
 import reelsRoutes from "./routes/reels.routes";
+import sceneToTitleRoutes from "./routes/sceneToTitle.routes";
 
 const app = express();
 
@@ -38,7 +39,7 @@ app.use(
   }),
 );
 
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "10mb" }));
 
 // Wire API Routes
 app.use("/api/v1/auth", authRoutes);
@@ -54,6 +55,7 @@ app.use("/api/v1/roadmap", roadmapRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/explore", exploreRoutes);
 app.use("/api/v1/reels", reelsRoutes);
+app.use("/api/v1/scene-to-title", sceneToTitleRoutes);
 
 // Catch-all unhandled API routes path
 app.all("*", (req, res, next) => {

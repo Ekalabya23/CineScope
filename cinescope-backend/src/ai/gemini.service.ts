@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import axios from "axios";
 import { ENV } from "../config/env";
 import { SYSTEM_INSTRUCTION } from "./prompts";
 
@@ -13,7 +14,7 @@ export const GeminiService = {
     enrichedContext: Record<string, any>,
   ): Promise<any> => {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -45,7 +46,7 @@ ${JSON.stringify(enrichedContext, null, 2)}`,
 
   generateCanonicalRoadmap: async (prompt: string): Promise<any> => {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -61,7 +62,7 @@ ${JSON.stringify(enrichedContext, null, 2)}`,
     enrichedContext: Record<string, any>,
   ): Promise<any> => {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -94,7 +95,7 @@ ${JSON.stringify(enrichedContext, null, 2)}`,
 
   explainRoadmap: async (enrichedContext: Record<string, any>): Promise<any> => {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -138,7 +139,7 @@ ${JSON.stringify(enrichedContext, null, 2)}`,
     enrichedContext: Record<string, any>,
   ): Promise<any> => {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -182,53 +183,4 @@ ${JSON.stringify(enrichedContext, null, 2)}`,
     return parseGeminiJson(response.text || "{}");
   },
 
-  analyzePrompt: async (
-    userPrompt: string,
-    historyContext: any[] = [],
-    enrichedContext: Record<string, any> = {},
-  ): Promise<any> => {
-    const formattedHistory = historyContext.map((chat) => ({
-      role: chat.role === "model" ? "model" : "user",
-      parts: chat.parts,
-    }));
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: [
-        ...formattedHistory,
-        {
-          role: "user",
-          parts: [
-            {
-              text: `${SYSTEM_INSTRUCTION}
-
-Personalization Context:
-${JSON.stringify(enrichedContext, null, 2)}
-
-User Input: "${userPrompt}"`,
-            },
-          ],
-        },
-      ],
-    });
-
-    const responseText = response.text ? response.text.trim() : "{}";
-
-    try {
-      // Direct structural safety parse bypass
-      return parseGeminiJson(responseText);
-    } catch {
-      return {
-        intentAnalysis: "Fallback processing configuration invoked.",
-        searchQuery: userPrompt,
-        tmdbFilters: {
-          mediaType: "movie",
-          with_genres: "",
-          sort_by: "popularity.desc",
-        },
-        explanation:
-          "Here is what I gathered based on your current exploration track.",
-      };
-    }
-  },
 };

@@ -35,7 +35,7 @@ const StatCard: React.FC<{
     <p className="text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">
       {label}
     </p>
-    <p className="mt-2 text-4xl font-black text-white">{value}</p>
+    <p className="mt-2 text-2xl sm:text-4xl font-black text-white">{value}</p>
     {detail && (
       <p className="mt-2 text-sm leading-6 text-zinc-400">
         <span style={{ color: accent }}>●</span> {detail}
@@ -69,7 +69,7 @@ const MoodRadar: React.FC<{ moods: any[] }> = ({ moods }) => {
       <p className="text-[10px] font-black uppercase tracking-[0.24em] text-zinc-500">
         Emotional spectrum
       </p>
-      <svg viewBox="0 0 240 240" className="mx-auto mt-4 h-72 w-full max-w-sm">
+      <svg viewBox="0 0 240 240" className="mx-auto mt-4 h-48 sm:h-72 w-full max-w-sm">
         {[36, 58, 80].map((radius) => (
           <circle
             key={radius}
@@ -173,7 +173,7 @@ export const Profile: React.FC = () => {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050609] pb-28 text-white">
-      <section className="relative min-h-[76vh] overflow-hidden px-5 pb-12 pt-32 md:px-12">
+      <section className="relative min-h-[60vh] md:min-h-[76vh] overflow-hidden px-5 pb-12 pt-24 md:pt-32 md:px-12">
         <img
           src={user.backdropUrl || fallbackBackdrop}
           alt=""
@@ -204,14 +204,14 @@ export const Profile: React.FC = () => {
                   <p className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: theme.accent }}>
                     Entertainment identity
                   </p>
-                  <h1 className="mt-2 text-5xl font-black leading-none md:text-7xl">
+                  <h1 className="mt-2 text-3xl sm:text-5xl font-black leading-none md:text-7xl">
                     {user.name}
                   </h1>
                   <p className="mt-2 text-sm text-zinc-300">Member since {joinDate}</p>
                 </div>
               </div>
 
-              <p className="max-w-3xl text-xl leading-8 text-zinc-200 md:text-2xl">
+              <p className="max-w-3xl text-base sm:text-xl leading-8 text-zinc-200 md:text-2xl">
                 {profile?.aiPersonalitySummary ||
                   "Your CineScope identity is still learning from your watch behavior."}
               </p>
@@ -257,7 +257,7 @@ export const Profile: React.FC = () => {
       </section>
 
       <div className="relative z-10 mx-auto -mt-8 max-w-7xl space-y-14 px-5 md:px-12">
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard
             label="Acceptance rate"
             value={`${analytics?.recommendationAcceptanceRate || 0}%`}
@@ -296,7 +296,7 @@ export const Profile: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-[0.24em]" style={{ color: theme.accent }}>
               AI taste profile
             </p>
-            <h2 className="mt-2 text-3xl font-black text-white">Wrapped-Style Taste DNA</h2>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-black text-white">Wrapped-Style Taste DNA</h2>
             <p className="mt-3 text-sm leading-7 text-zinc-400">
               {taste.behaviorSummary || analytics?.aiPersonalitySummary}
             </p>
@@ -328,7 +328,7 @@ export const Profile: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-[0.24em]" style={{ color: theme.accent }}>
               Saved cinematic vault
             </p>
-            <h2 className="mt-1 text-3xl font-black text-white">Watchlist Vault</h2>
+            <h2 className="mt-1 text-2xl sm:text-3xl font-black text-white">Watchlist Vault</h2>
           </div>
           {watchlistMovies.length ? (
             <div className="flex gap-4 overflow-x-auto pb-5 scrollbar-hide">

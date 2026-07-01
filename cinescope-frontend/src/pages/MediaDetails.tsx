@@ -87,7 +87,7 @@ export const MediaDetails: React.FC = () => {
   }
 
   return (
-    <main className="min-h-screen bg-[#050609] pb-24 text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#050609] pb-24 text-white">
       <section className="relative min-h-[78vh] overflow-hidden">
         <img
           src={imageUrl(getBackdropPath(media), "original")}
@@ -97,13 +97,13 @@ export const MediaDetails: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050609] via-[#050609]/45 to-transparent" />
         <div className="absolute inset-0" style={{ background: theme.gradient }} />
 
-        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end gap-8 px-5 pb-14 pt-32 md:px-12 lg:flex-row lg:items-end">
+        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-end gap-8 px-5 pb-14 pt-24 md:pt-32 md:px-12 lg:flex-row lg:items-end">
           <motion.img
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             src={imageUrl(media.poster_path, "w500")}
             alt={getTitle(media)}
-            className="w-52 rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl md:w-64"
+            className="w-40 sm:w-52 rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl md:w-64"
           />
 
           <motion.div
@@ -115,7 +115,7 @@ export const MediaDetails: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-[0.28em]" style={{ color: theme.accent }}>
               Cinematic detail system
             </p>
-            <h1 className="text-5xl font-black leading-none text-white md:text-7xl">
+            <h1 className="text-3xl sm:text-5xl font-black leading-none text-white md:text-7xl">
               {getTitle(media)}
             </h1>
             {media.tagline && <p className="text-lg italic text-zinc-300">{media.tagline}</p>}
@@ -208,7 +208,7 @@ export const MediaDetails: React.FC = () => {
 
         {media.credits?.cast?.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-3xl font-black text-white">Cast</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-white">Cast</h2>
             <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
               {media.credits.cast.slice(0, 14).map((person: any) => (
                 <div key={person.cast_id || person.id} className="w-32 flex-none rounded-2xl border border-white/10 bg-white/[0.04] p-2">
@@ -231,7 +231,7 @@ export const MediaDetails: React.FC = () => {
               <p className="text-[10px] font-black uppercase tracking-[0.26em]" style={{ color: theme.accent }}>
                 Similar universes
               </p>
-              <h2 className="mt-1 text-3xl font-black text-white">AI-Matched Next Watches</h2>
+              <h2 className="mt-1 text-2xl sm:text-3xl font-black text-white">AI-Matched Next Watches</h2>
             </div>
             <div className="flex gap-4 overflow-x-auto pb-5 scrollbar-hide">
               {similar.map((item) => (

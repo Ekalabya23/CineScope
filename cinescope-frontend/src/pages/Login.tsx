@@ -28,9 +28,9 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-[#0b0c10] flex items-center justify-center px-4 relative">
+    <div className="min-h-screen w-full bg-[#0b0c10] flex items-center justify-center px-4 relative">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(229,9,20,0.08)_0,transparent_65%)]" />
-      <div className="w-full max-w-md glass-panel p-8 rounded-2xl relative z-10 shadow-2xl">
+      <div className="w-full max-w-md glass-panel p-5 sm:p-8 rounded-2xl relative z-10 shadow-2xl">
         <h2 className="text-3xl font-black text-center text-white mb-2 tracking-tight">
           Access CineScope
         </h2>
@@ -80,7 +80,7 @@ export const Login: React.FC = () => {
           New to the node network?{" "}
           <Link
             to="/register"
-            className="text-red-500 font-semibold hover:underline"
+            className="text-red-500 font-semibold hover:underline py-2 inline-block"
           >
             Register Channel
           </Link>

@@ -68,48 +68,50 @@ const ReviewerPhoto: React.FC<{ reviewer: Reviewer; sizeClass?: string }> = ({
 
 export const TrustedReviewersBanner: React.FC = () => {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#08090d]/85 p-5 shadow-2xl backdrop-blur-2xl md:p-7 lg:p-8">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_34%),radial-gradient(circle_at_12%_8%,rgba(229,9,20,0.24),transparent_30%),radial-gradient(circle_at_88%_72%,rgba(20,184,166,0.16),transparent_34%)]" />
-      <div className="relative grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+    <section className="relative space-y-5 py-2">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-red-300">
+          <p className="text-[10px] font-black uppercase tracking-[0.26em] text-red-400">
             Trusted creator reviews
           </p>
-          <h2 className="mt-2 max-w-2xl text-3xl font-black leading-tight text-white md:text-5xl">
-            AI review intelligence from India&apos;s top movie voices
+          <h2 className="mt-1 text-2xl font-black tracking-normal text-white md:text-4xl">
+            AI review intelligence
           </h2>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-zinc-300">
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
             CineScope blends creator-style reactions, audience mood, and cinematic analysis into one premium discovery signal.
           </p>
         </div>
-
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 lg:gap-4">
-          {trustedIndianReviewers.map((reviewer, index) => (
-            <motion.div
-              key={reviewer.name}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ y: -6, scale: 1.03 }}
-              className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.055] p-3 text-center"
-            >
-              <div
-                className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
-                style={{ background: reviewer.gradient }}
-              />
-              <div className="relative mx-auto flex flex-col items-center gap-3">
-                <ReviewerPhoto reviewer={reviewer} />
-                <div className="min-h-[54px]">
-                  <h3 className="text-sm font-black text-white">{reviewer.name}</h3>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-500">
-                    {reviewer.label}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-300 backdrop-blur">
+          India's Top Voices
         </div>
+      </div>
+
+      <div className="flex gap-4 overflow-x-auto overflow-y-visible px-1 pb-4 pt-2 scrollbar-hide">
+        {trustedIndianReviewers.map((reviewer, index) => (
+          <motion.div
+            key={reviewer.name}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ y: -6, scale: 1.03 }}
+            className="relative w-36 sm:w-40 flex-none overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center backdrop-blur-xl"
+          >
+            <div
+              className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100"
+              style={{ background: reviewer.gradient }}
+            />
+            <div className="relative mx-auto flex flex-col items-center gap-3">
+              <ReviewerPhoto reviewer={reviewer} sizeClass="h-16 w-16 sm:h-20 sm:w-20" />
+              <div className="min-h-[54px]">
+                <h3 className="text-xs sm:text-sm font-black text-white">{reviewer.name}</h3>
+                <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.1em] text-zinc-400">
+                  {reviewer.label}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

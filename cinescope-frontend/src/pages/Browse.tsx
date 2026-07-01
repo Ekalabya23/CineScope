@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { AiChatSidebar } from "../components/AiChatSidebar";
 import { CinematicHero } from "../components/CinematicHero";
 import { ContinueWatchingRail } from "../components/ContinueWatchingRail";
 import { DynamicSectionRenderer } from "../components/DynamicSectionRenderer";
@@ -14,7 +13,7 @@ import { useCinematicTheme } from "../context/CinematicThemeContext";
 
 const CinematicSkeleton = () => (
   <div className="min-h-screen bg-[#050609]">
-    <div className="relative h-[88vh] overflow-hidden bg-zinc-950">
+    <div className="relative h-[60vh] md:h-[88vh] overflow-hidden bg-zinc-950">
       <div className="absolute inset-0 shimmer opacity-40" />
       <div className="absolute bottom-24 left-6 w-[min(680px,80vw)] space-y-5 md:left-16">
         <div className="h-4 w-52 rounded-full bg-white/10" />
@@ -26,12 +25,12 @@ const CinematicSkeleton = () => (
     <div className="-mt-12 space-y-8 px-5 md:px-16">
       {[1, 2, 3].map((item) => (
         <div key={item} className="space-y-4">
-          <div className="h-7 w-80 rounded-full bg-white/10" />
+          <div className="h-7 w-full max-w-[320px] rounded-full bg-white/10" />
           <div className="flex gap-4 overflow-hidden">
             {[1, 2, 3, 4, 5].map((card) => (
               <div
                 key={card}
-                className="h-64 w-44 flex-none rounded-xl bg-white/10 shimmer"
+                className="h-64 w-36 sm:w-44 flex-none rounded-xl bg-white/10 shimmer"
               />
             ))}
           </div>
@@ -143,7 +142,7 @@ export const Browse: React.FC = () => {
       )}
 
       {moodDiscovery && (
-        <section className="relative min-h-[72vh] px-5 pb-12 pt-36 md:px-16">
+        <section className="relative min-h-[72vh] px-5 pb-12 pt-24 md:pt-36 md:px-16">
           <div
             className="absolute inset-0 opacity-80"
             style={{ background: activeTheme.gradient }}
@@ -159,7 +158,7 @@ export const Browse: React.FC = () => {
             >
               Mood discovery system
             </p>
-            <h1 className="text-5xl font-black capitalize leading-none text-white md:text-8xl">
+            <h1 className="text-3xl sm:text-5xl font-black capitalize leading-none text-white md:text-8xl">
               {moodDiscovery.mood.replace("-", " ")}
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-300">
@@ -182,7 +181,7 @@ export const Browse: React.FC = () => {
       )}
 
       <div
-        className={`relative z-10 ${moodDiscovery ? "pt-0" : "pt-12"} mx-auto max-w-[1700px] space-y-20 px-4 md:px-10 lg:px-16`}
+        className={`relative z-10 ${moodDiscovery ? "pt-0" : "pt-12"} mx-auto max-w-[1700px] space-y-10 md:space-y-20 px-4 md:px-10 lg:px-16`}
       >
         {moodDiscovery && (
           <section className="space-y-5">
@@ -214,8 +213,6 @@ export const Browse: React.FC = () => {
 
         {!moodDiscovery && <TasteProfilePanel profile={tasteProfile} />}
       </div>
-
-      <AiChatSidebar />
     </main>
   );
 };
