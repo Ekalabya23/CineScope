@@ -222,12 +222,13 @@ export const ReelAdminUpload: React.FC<ReelAdminUploadProps> = ({ onUploaded }) 
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 px-4 backdrop-blur-sm">
-          <form
-            onSubmit={submit}
-            className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#08090d] p-5 text-white shadow-2xl"
-          >
-            <div className="flex items-start justify-between gap-4">
+        <div className="fixed inset-0 z-[90] overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center py-8">
+            <form
+              onSubmit={submit}
+              className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#08090d] p-5 text-white shadow-2xl"
+            >
+              <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-300">
                   Admin curation
@@ -411,7 +412,8 @@ export const ReelAdminUpload: React.FC<ReelAdminUploadProps> = ({ onUploaded }) 
                   ? "Preparing metadata..."
                   : "Upload to Cloudinary"}
             </button>
-          </form>
+            </form>
+          </div>
         </div>
       )}
     </>
