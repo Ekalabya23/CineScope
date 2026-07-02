@@ -79,7 +79,7 @@ export const ReelCard: React.FC<ReelCardProps> = ({
           loop
           muted={muted}
           preload={isActive ? "auto" : "metadata"}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-contain"
           onClick={togglePlayback}
         />
       )}
