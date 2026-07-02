@@ -2,12 +2,18 @@ import axios from "axios";
 import { ENV } from "../config/env";
 import { SYSTEM_INSTRUCTION } from "./prompts";
 
-const groqRequestWithFallback = async (messages: any[], temperature: number) => {
-  const models = [
+const groqRequestWithFallback = async (messages: any[], temperature: number, isChatbot = false) => {
+  const models = isChatbot ? [
     "openai/gpt-oss-120b",
     "llama-3.3-70b-versatile",
     "qwen/qwen3.6-27b",
     "openai/gpt-oss-20b",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "llama-3.1-8b-instant",
+    "llama3-8b-8192"
+  ] : [
+    "llama-3.3-70b-versatile",
+    "qwen/qwen3.6-27b",
     "meta-llama/llama-4-scout-17b-16e-instruct",
     "llama-3.1-8b-instant",
     "llama3-8b-8192"
@@ -16,26 +22,40 @@ const groqRequestWithFallback = async (messages: any[], temperature: number) => 
 
   for (const model of models) {
     try {
+      const isNvidia = model.startsWith("openai/gpt-oss");
+      if (isNvidia && !ENV.NVIDIA_API_KEY) continue;
+      
+      const endpoint = isNvidia 
+        ? "https://integrate.api.nvidia.com/v1/chat/completions"
+        : "https://api.groq.com/openai/v1/chat/completions";
+        
+      const apiKey = isNvidia ? ENV.NVIDIA_API_KEY : ENV.GROQ_API_KEY;
+
+      const payload: any = {
+        model,
+        messages,
+        temperature,
+      };
+      
+      if (!isNvidia) {
+        payload.response_format = { type: "json_object" };
+      }
+
       const response = await axios.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          model,
-          messages,
-          response_format: { type: "json_object" },
-          temperature,
-        },
+        endpoint,
+        payload,
         {
           headers: {
-            Authorization: `Bearer ${ENV.GROQ_API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json",
           },
         }
       );
-      return response.data.choices[0].message.content || "{}";
+      return response.data.choices[0].message.content || (isNvidia ? "" : "{}");
     } catch (error: any) {
       lastError = error;
-      console.warn(`[CineScope AI] Groq failed on ${model} (${error?.response?.data?.error?.code || error?.response?.status}), falling back...`);
-      continue; // Try next model on ANY error (rate limit, decommissioned, etc)
+      console.warn(`[CineScope AI] Failed on ${model} (${error?.response?.data?.error?.code || error?.response?.status}), falling back...`);
+      continue;
     }
   }
   throw lastError;
@@ -230,7 +250,8 @@ ${JSON.stringify(enrichedContext, null, 2)}`;
           ...formattedHistory,
           { role: "user", content: userPrompt }
         ],
-        0.3
+        0.3,
+        true
       );
       return JSON.parse(responseText.trim().replace(/```json|```/g, ""));
     } catch (error: any) {

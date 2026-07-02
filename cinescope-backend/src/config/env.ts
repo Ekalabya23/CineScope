@@ -16,6 +16,7 @@ export const ENV = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || "YOUR_CLOUDINARY_API_KEY",
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || "YOUR_CLOUDINARY_API_SECRET",
   GROQ_API_KEY: process.env.GROQ_API_KEY || "",
+  NVIDIA_API_KEY: process.env.NVIDIA_API_KEY || "",
   CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:5173",
 };
 
